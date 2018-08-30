@@ -1,5 +1,5 @@
 <h2>My Cryptopals Solutions</h2>
-<p>Language of choice: Python 3</p>
+<p>Python 3</p>
 <br/>
 <p><b>SET 1:</b></p>
 <ul>
