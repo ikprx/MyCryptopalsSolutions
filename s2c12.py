@@ -5,7 +5,7 @@ from s2c11 import isecb
 import base64
 from s1c06 import breaktoblocks
 
-key = urandom(16)
+key =  urandom(16)
 strenc = base64.b64decode("Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK") 
 
 def encryption_oracle(append):
@@ -25,17 +25,18 @@ def getbs():
 
     return len(enc) - len(fenc)
 def decryptbbb(bs):
-    found = ""
+    found = bytearray()
 
     while len(found) <= bs:
         padding = bytearray(str("A"*(bs-len(found)-1)).encode('ascii'))
         encrypted = breaktoblocks(encryption_oracle(padding),16)[0]
         for ch in range(0, 255):
-            padding1 = bytearray(str("A"*(bs-len(found)-1)+found).encode('ascii'))
+            padding1 = bytearray(str("A"*(bs-len(found)-1)).encode('ascii'))
+            padding1 += found
             padding1.append(ch)
             encrypted1 = breaktoblocks(encryption_oracle(padding1),16)[0]
             if encrypted == encrypted1:
-                found += chr(ch)
+                found.append(ch)
                 break
     print(found)
 
