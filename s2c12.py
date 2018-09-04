@@ -8,32 +8,32 @@ from s1c06 import breaktoblocks
 key = urandom(16)
 strenc = base64.b64decode("Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK") 
 
-def encryption_oracle(i, append):
-    return aes_encrypt_ecb(pkcs7pad(append+i,16),key)
+def encryption_oracle(append):
+    return aes_encrypt_ecb(pkcs7pad(append+strenc,16),key)
 
-def getbs(s):
-    fenc = encryption_oracle(s,bytearray())
+def getbs():
+    fenc = encryption_oracle(bytearray())
 
     a = bytearray()
     a.append(ord("A"))
 
-    enc = encryption_oracle(s,a)
+    enc = encryption_oracle(a)
 
     while len(fenc) == len(enc):
         a.append(ord("A"))
-        enc = encryption_oracle(s,a)
+        enc = encryption_oracle(a)
 
     return len(enc) - len(fenc)
-def decryptbbb(s,bs):
+def decryptbbb(bs):
     found = ""
 
     while len(found) <= bs:
         padding = bytearray(str("A"*(bs-len(found)-1)).encode('ascii'))
-        encrypted = breaktoblocks(encryption_oracle(s,padding),16)[0]
+        encrypted = breaktoblocks(encryption_oracle(padding),16)[0]
         for ch in range(0, 255):
             padding1 = bytearray(str("A"*(bs-len(found)-1)+found).encode('ascii'))
             padding1.append(ch)
-            encrypted1 = breaktoblocks(encryption_oracle(s,padding1),16)[0]
+            encrypted1 = breaktoblocks(encryption_oracle(padding1),16)[0]
             if encrypted == encrypted1:
                 found += chr(ch)
                 break
@@ -42,10 +42,10 @@ def decryptbbb(s,bs):
 
 
 def main():
-    bs = getbs(strenc)
-    ecb = isecb(encryption_oracle(strenc,bytearray(43)))
+    bs = getbs()
+    ecb = isecb(encryption_oracle(bytearray(43)))
     if ecb:
-        decryptbbb(strenc,bs)
+        decryptbbb(bs)
         
 
 if __name__ == "__main__":
