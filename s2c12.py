@@ -27,7 +27,7 @@ def getbs():
 def decryptbbb(bs):
     found = bytearray()
 
-    while len(found) <= bs:
+    while len(found) != bs:
         padding = bytearray(str("A"*(bs-len(found)-1)).encode('ascii'))
         encrypted = breaktoblocks(encryption_oracle(padding),16)[0]
         for ch in range(0, 255):
