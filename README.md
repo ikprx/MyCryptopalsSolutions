@@ -17,4 +17,5 @@
 	<li>CHALLENGE 9 - DONE</li>
 	<li>CHALLENGE 10 - DONE</li>
 	<li>CHALLENGE 11 - DONE</li>
+	<li>CHALLENGE 12 - DONE</li>
 </ul>
