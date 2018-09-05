@@ -24,21 +24,34 @@ def getbs():
         enc = encryption_oracle(a)
 
     return len(enc) - len(fenc)
-def decryptbbb(bs):
-    found = bytearray()
 
-    while len(found) != bs:
-        padding = bytearray(str("A"*(bs-len(found)-1)).encode('ascii'))
-        encrypted = breaktoblocks(encryption_oracle(padding),16)[0]
-        for ch in range(0, 255):
-            padding1 = bytearray(str("A"*(bs-len(found)-1)).encode('ascii'))
+def getTextLen():
+    cnpad = len(encryption_oracle(bytearray()))
+    ncnpad = cnpad
+    i = 1
+    while cnpad == ncnpad:
+        ncnpad = len(encryption_oracle(bytearray(str("A"*i).encode('ascii'))))
+        if ncnpad != cnpad:
+            return ncnpad - 16 - i
+        i+=1
+
+def decryptbbb(bs):
+    cipherlen = len(encryption_oracle(bytearray()))
+    found = bytearray()
+    textlen = getTextLen()
+        
+    while len(found) != textlen:
+        padding = bytearray(str("A"*(cipherlen-len(found)-1)).encode('ascii'))
+        enc = encryption_oracle(padding)[:cipherlen]
+        for c in range(0,255):
+            padding1 = bytearray(str("A"*(cipherlen-len(found)-1)).encode('ascii'))
             padding1 += found
-            padding1.append(ch)
-            encrypted1 = breaktoblocks(encryption_oracle(padding1),16)[0]
-            if encrypted == encrypted1:
-                found.append(ch)
-                break
-    print(found)
+            padding1.append(c)
+            enc1 = encryption_oracle(padding1)[:cipherlen]
+            if enc1 == enc:
+                found.append(c)
+    return found
+
 
 
 
@@ -46,7 +59,7 @@ def main():
     bs = getbs()
     ecb = isecb(encryption_oracle(bytearray(43)))
     if ecb:
-        decryptbbb(bs)
+        print(decryptbbb(bs).decode('ascii'))
         
 
 if __name__ == "__main__":
